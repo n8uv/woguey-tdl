@@ -10,6 +10,11 @@ Woguey Wikey (tdl version)
 
 4- Type: python woguey.py
 
+or
+
+Download from itch.io and you don't need to install tdl:
+https://n8uv.itch.io/woguey-wikey
+
 ## How to play on Windows
 1- Install GNU/Linux: https://www.gentoo.org/
 
