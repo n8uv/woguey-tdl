@@ -12,7 +12,7 @@ Woguey Wikey (tdl version)
 
 
 
-## How to play on Windows
+## How to play on Windows or Mac
 1- Install GNU/Linux: https://www.gentoo.org/
 
 2- Same as above
