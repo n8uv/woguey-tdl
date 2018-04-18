@@ -31,13 +31,15 @@ MAX_ROOMS = 40
 
 #spell values
 HEAL_AMOUNT = 40
-LIGHTNING_DAMAGE = 40
-LIGHTNING_RANGE = 5
+TWERKING_DAMAGE = 40
+TWERKING_RANGE = 5
+GRINDING_DAMAGE = 80
+GRINDING_RANGE = 4
 CONFUSE_RANGE = 8
 CONFUSE_NUM_TURNS = 10
-FIREBALL_RANGE = 8
-FIREBALL_RADIUS = 3
-FIREBALL_DAMAGE = 25
+GANGNAM_RANGE = 8
+GANGNAM_RADIUS = 3
+GANGNAM_DAMAGE = 25
 
 #experience and levelups
 LEVEL_UP_BASE = 200
@@ -180,14 +182,14 @@ class Fighter:
 
     def attack(self, target):
         #battle formula
-        damage = self.power - target.fighter.defense
+        damage = libtcod.random_get_int(0, 0, 2) * int(1 + ((2 * self.power) / (1 + target.fighter.defense))) + libtcod.random_get_int(0, 0, 6)
 
         if damage > 0:
             #make the target take damage
             message(self.owner.name.capitalize() + ' dabs on ' + target.name + ' for ' + str(damage) + ' CUMMIES!! XD')
             target.fighter.take_damage(damage)
         else:
-            message(self.owner.name.capitalize() + ' tries to dab on ' + target.name + ' but is not ~squishy~ enough!!')
+            message(self.owner.name.capitalize() + ' tries to dab on ' + target.name + ' but wasn\'t ~squishy~ enough!!')
 
     def take_damage(self, damage):
         #apply damage if possible
@@ -480,9 +482,12 @@ def place_objects(room):
     #chance of each monster
     monster_chances = {}
     monster_chances['ugly'] = from_dungeon_level([[120, 1], [80, 2], [50, 3], [40, 10]])
+    monster_chances['frogposter'] = from_dungeon_level([[120, 1], [80, 2], [50, 3], [40, 10]])
     monster_chances['nerdy'] = from_dungeon_level([[100, 1], [90, 2], [80, 3], [50, 10]])
+    monster_chances['normie'] = from_dungeon_level([[100, 1], [90, 2], [80, 3], [50, 10]])
     monster_chances['qt'] = from_dungeon_level([[10, 1], [20, 2], [30, 3], [40, 4], [50, 5], [80, 6], [100, 8], [70, 10]])
     monster_chances['daddy'] = from_dungeon_level([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [8, 6], [10, 8], [30, 10], [50, 12], [100, 15], [200, 20]])
+    monster_chances['business'] = from_dungeon_level([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [8, 6], [10, 8], [30, 10], [50, 12], [100, 15], [200, 20]])
     monster_chances['perfect'] = from_dungeon_level([[1, 10], [20, 15], [50, 20], [500, 50]])
 
     #maximum number of items per room per level
@@ -491,11 +496,15 @@ def place_objects(room):
     #chance of each item
     item_chances = {}
     item_chances['heal'] = 35
-    item_chances['lightning'] = from_dungeon_level([[25, 4], [50, 10]])
-    item_chances['fireball'] = from_dungeon_level([[25, 6]])
+    item_chances['twerking'] = from_dungeon_level([[25, 4], [50, 10]])
+    item_chances['grinding'] = from_dungeon_level([[40, 8]])
+    item_chances['gangnam'] = from_dungeon_level([[25, 6]])
     item_chances['confuse'] = from_dungeon_level([[10, 2]])
-    item_chances['gloves'] =     from_dungeon_level([[5, 4]])
-    item_chances['skirt'] =    from_dungeon_level([[15, 8]])
+    item_chances['gloves'] =     from_dungeon_level([[10, 4]])
+    item_chances['gold'] =     from_dungeon_level([[15, 10]])
+    item_chances['skirt'] =    from_dungeon_level([[10, 5]])
+    item_chances['mini'] =    from_dungeon_level([[15, 8]])
+
 
     #choose random number of monsters 
     num_monsters = libtcod.random_get_int(0, 0, max_monsters)  
@@ -511,34 +520,52 @@ def place_objects(room):
             #chances
             choice = random_choice(monster_chances)
             if choice == 'daddy':
-                fighter_component = Fighter(hp=60, defense=4, power=10, xp=250, death_function=monster_death)
+                fighter_component = Fighter(hp=100, defense=10, power=20, xp=250, death_function=monster_death)
                 ai_component = BasicMonster()
 
                 monster = Object(x, y, 'D', 'daddy', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
 
+            if choice == 'business':
+                fighter_component = Fighter(hp=80, defense=22, power=10, xp=250, death_function=monster_death)
+                ai_component = BasicMonster()
+
+                monster = Object(x, y, 'B', 'businessman', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
+
             elif choice == 'perfect':
-                fighter_component = Fighter(hp=300, defense=12, power=80, xp=5000, death_function=monster_death)
+                fighter_component = Fighter(hp=300, defense=12, power=50, xp=5000, death_function=monster_death)
                 ai_component = BasicMonster()
 
                 monster = Object(x, y, 'P', 'perfect DADDY', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
 
             elif choice == 'qt':
-                fighter_component = Fighter(hp=30, defense=2, power=8, xp=100, death_function=monster_death)
+                fighter_component = Fighter(hp=30, defense=5, power=10, xp=100, death_function=monster_death)
                 ai_component = BasicMonster()
 
                 monster = Object(x, y, 'q', 'qt3.14', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
 
             elif choice == 'nerdy':
-                fighter_component = Fighter(hp=20, defense=0, power=4, xp=35, death_function=monster_death)
+                fighter_component = Fighter(hp=20, defense=1, power=4, xp=35, death_function=monster_death)
                 ai_component = BasicMonster()
 
                 monster = Object(x, y, 'n', 'nerdy', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
 
+            elif choice == 'normie':
+                fighter_component = Fighter(hp=20, defense=2, power=2, xp=45, death_function=monster_death)
+                ai_component = BasicMonster()
+
+                monster = Object(x, y, 'o', 'normie', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
+
             elif choice == 'ugly':
-                fighter_component = Fighter(hp=10, defense=0, power=4, xp=15, death_function=monster_death)
+                fighter_component = Fighter(hp=12, defense=1, power=4, xp=15, death_function=monster_death)
                 ai_component = BasicMonster()
 
                 monster = Object(x, y, 'u', 'ugly', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
+
+            elif choice == 'frogposter':
+                fighter_component = Fighter(hp=15, defense=1, power=1, xp=10, death_function=monster_death)
+                ai_component = BasicMonster()
+
+                monster = Object(x, y, 'f', 'dumb frogposter', libtcod.white, blocks = True, fighter=fighter_component, ai=ai_component)
             
             objects.append(monster)
 
@@ -559,15 +586,21 @@ def place_objects(room):
 
                 item = Object(x, y, '!', 'jello shot', libtcod.violet, item=item_component)
 
-            elif choice == 'lightning':
-                #create a lightning scroll(10% chance)
-                item_component = Item(use_function=cast_lightning)
+            elif choice == 'twerking':
+                #create a twerking scroll(10% chance)
+                item_component = Item(use_function=cast_twerking)
 
                 item = Object(x, y, '#', 'vodka', libtcod.light_yellow, item=item_component)
 
-            elif choice == 'fireball':
-                #create fireball scroll(10% chance)
-                item_component = Item(use_function=cast_fireball)
+            elif choice == 'grinding':
+                #create a grinding scroll(10% chance)
+                item_component = Item(use_function=cast_grinding)
+
+                item = Object(x, y, '#', 'absinthe', libtcod.light_yellow, item=item_component)
+
+            elif choice == 'gangnam':
+                #create gangnam scroll(10% chance)
+                item_component = Item(use_function=cast_gangnam)
 
                 item = Object(x, y, '#', 'whisky', libtcod.light_yellow, item=item_component)
 
@@ -579,13 +612,23 @@ def place_objects(room):
 
             elif choice == 'gloves':
                 #create gloves
-                equipment_component = Equipment(slot='accessories', power_bonus=3)
-                item = Object(x, y, '/', 'gloves', libtcod.sky, equipment=equipment_component)
+                equipment_component = Equipment(slot='accessories', power_bonus=5, defense_bonus=1, max_hp_bonus=10)
+                item = Object(x, y, '/', 'dabbing gloves', libtcod.sky, equipment=equipment_component)
+
+            elif choice == 'gold':
+                #create gold ring
+                equipment_component = Equipment(slot='accessories', power_bonus=8, defense_bonus=2, max_hp_bonus=20)
+                item = Object(x, y, '/', 'gold ring', libtcod.sky, equipment=equipment_component)
  
             elif choice == 'skirt':
                 #create a skirt
-                equipment_component = Equipment(slot='clothes', defense_bonus=1)
+                equipment_component = Equipment(slot='clothes', power_bonus=1, defense_bonus=3, max_hp_bonus=30)
                 item = Object(x, y, '[', 'skirt', libtcod.darker_orange, equipment=equipment_component)
+
+            elif choice == 'mini':
+                #create a mini-skirt
+                equipment_component = Equipment(slot='clothes', power_bonus=2, defense_bonus=4, max_hp_bonus=50)
+                item = Object(x, y, '[', 'mini-skirt', libtcod.darker_orange, equipment=equipment_component)
  
             objects.append(item)
             item.send_to_back() #appears below other obj
@@ -908,30 +951,41 @@ def cast_heal():
     message('You replenished your cummies! Yum!', libtcod.light_violet)
     player.fighter.heal(HEAL_AMOUNT)
 
-def cast_lightning():
+def cast_twerking():
     #find closest enemy and damage it
-    monster = closest_monster(LIGHTNING_RANGE)
+    monster = closest_monster(TWERKING_RANGE)
     if monster is None:
         message('No ~squishies~ close enough.', libtcod.red)
         return 'cancelled'
 
     #twerk on it
-    message('You start twerking on ' + monster.name + ' and make him lose ' + str(LIGHTNING_DAMAGE) + ' CUMMIES!', libtcod.light_blue)
-    monster.fighter.take_damage(LIGHTNING_DAMAGE)
+    message('You start twerking on ' + monster.name + ' and make him lose ' + str(TWERKING_DAMAGE) + ' CUMMIES!', libtcod.light_blue)
+    monster.fighter.take_damage(TWERKING_DAMAGE)
 
-def cast_fireball():
-    monster = closest_monster(FIREBALL_RANGE)
+def cast_grinding():
+    #find closest enemy and damage it
+    monster = closest_monster(GRINDING_RANGE)
+    if monster is None:
+        message('No ~squishies~ close enough.', libtcod.red)
+        return 'cancelled'
+
+    #grind on it
+    message('You start grinding on ' + monster.name + ' and make him lose ' + str(GRINDING_DAMAGE) + ' CUMMIES!', libtcod.light_blue)
+    monster.fighter.take_damage(GRINDING_DAMAGE)
+
+def cast_gangnam():
+    monster = closest_monster(GANGNAM_RANGE)
     if monster is None:
         message('Don\'t be silly!! No one is in range!', libtcod.red)
         return 'cancelled'
     
     #OPA OPA OPA GANGNAM STYLE
-    message('Everyone suffers through your Gangnam Style within ' + str(FIREBALL_RADIUS) + ' tiles!', libtcod.orange)
+    message('Everyone suffers through your Gangnam Style within ' + str(GANGNAM_RADIUS) + ' tiles!', libtcod.orange)
 
     for obj in objects:
-        if obj.distance_to(monster) <= FIREBALL_RADIUS and obj.fighter and obj != player:
-            message('The ' + obj.name + ' gets pwned for ' + str(FIREBALL_DAMAGE) + ' CUMMIES!', libtcod.orange)
-            obj.fighter.take_damage(FIREBALL_DAMAGE)
+        if obj.distance_to(monster) <= GANGNAM_RADIUS and obj.fighter and obj != player:
+            message('The ' + obj.name + ' gets pwned for ' + str(GANGNAM_DAMAGE) + ' CUMMIES!', libtcod.orange)
+            obj.fighter.take_damage(GANGNAM_DAMAGE)
 
 def cast_confuse():
     #find closest enemy in-range and confuse it
@@ -1000,7 +1054,7 @@ def new_game():
 
     #initial equipment: ring
     equipment_component = Equipment(slot='accessories', power_bonus=2)
-    obj = Object(0, 0, '/', 'ring', libtcod.sky, equipment=equipment_component)
+    obj = Object(0, 0, '/', 'candy ring', libtcod.sky, equipment=equipment_component)
     inventory.append(obj)
     equipment_component.equip()
     obj.always_visible = True
