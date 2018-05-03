@@ -36,7 +36,7 @@ g - grab item
 
 d - discard item
 
-< - descend stairs
+< or , - descend stairs
 
 Esc - pause and save game
 
