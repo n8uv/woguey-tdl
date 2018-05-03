@@ -876,7 +876,7 @@ def handle_keys():
                     '\nExperience to level up: ' + str(level_up_xp) + '\n\nMaximum Cummies: ' + str(player.fighter.max_hp) + 
                     '\nBeauty: ' + str(player.fighter.power) + '\nStyle: ' + str(player.fighter.defense), CHARACTER_SCREEN_WIDTH)
 
-            if key_char == '<':
+            if key_char == '<' or key_char == ',':
                 #go down stairs if player is on
                 if stairs.x == player.x and stairs.y == player.y:
                     next_level()
